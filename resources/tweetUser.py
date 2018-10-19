@@ -131,7 +131,7 @@ def checkEmailandTweet(email,tweet):
                 if status == tweet:
                     tweets[indexEmail]['tweet'].pop(indeksTweet)
                     tweets[indexEmail]['date'].pop(indeksTweet)
-                    return
+                    return indexEmail
                 indeksTweet += 1
             abort(400, message = "tweet tidak ditemukan")
 
@@ -216,9 +216,10 @@ class TweetData(Resource):
         req = request.json
         args = self.reqparse.parse_args()
         index = checkEmailandTweet(req['email'],req['tweet'])
-        tweets[index]['tweet'] = req['tweetBaru']
+        
         date = datetime.now()
-        tweets[index]['date'] = str(date)
+        tweets[index]['tweet'].append(req['tweetBaru'])
+        tweets[index]['date'].append(str(date))
         updateDataTweet(tweets)
         return tweets[index]
 
