@@ -17,3 +17,5 @@ Apabila pengguna sudah melakukan log in dan berhasil maka pengguna dapat melakuk
     * Merubah tweet lama berdasarkan email pengguna. Tweet yang lama dan tanggal akan diperbaharui sehingga tweet lama akan dihapus.
 *   ## **Delete**
     * Menghapus tweet yang sudah dipublikasikan.
+
+Sudah diperiksa
