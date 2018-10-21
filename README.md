@@ -18,8 +18,3 @@ Apabila pengguna sudah melakukan log in dan berhasil maka pengguna dapat melakuk
 *   ## **Delete**
     * Menghapus tweet yang sudah dipublikasikan.
 
-kamu berubah 'ini coda yang ngubah'
-
-"INI BERBEDA YA HARUS BERUBAH NGECEK NYA GIMANA"
-
-"ini yang ngerubah coda"
