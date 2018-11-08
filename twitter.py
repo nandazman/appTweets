@@ -326,8 +326,20 @@ def get_account_data():
     # username = request_data.get('username')
     try:
         decoded = jwt.decode(request.headers["Authorization"], 'lalala', algorithms=['HS256'])
+        if decoded['rahasia'] != 'secret':
+            respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+            respons = json.dumps(respons)
+            return respons, 400
     except jwt.exceptions.DecodeError:
-        return "You have to logged in", 400
+        respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+        respons = json.dumps(respons)
+        return respons, 400
     userDB = Person.query.filter_by(username = decoded['username']).first()
     json_format = {
         'id' : fields.Integer,
@@ -337,8 +349,16 @@ def get_account_data():
         'bio' : fields.String,
         'photoprofile' : fields.String
     }
-    user_json = json.dumps(marshal(userDB, json_format))
-    return user_json, 200
+    user_json = marshal(userDB, json_format)
+
+    respons = {
+            'sukses': True,
+            'message': 'Succes',
+            'data': user_json
+        }
+    respons = json.dumps(respons)
+    return respons, 200
+
 
 # editig route
 @app.route('/editprofile', methods = ['PUT'])
@@ -349,9 +369,19 @@ def edit_profile():
     try:
         decoded = jwt.decode(request.headers["Authorization"], 'lalala', algorithms=['HS256'])
         if decoded['rahasia'] != 'secret':
-            return "You have to logged in", 400
+            respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+            respons = json.dumps(respons)
+            return respons, 400
     except jwt.exceptions.DecodeError:
-        return "You have to logged in", 400
+        respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+        respons = json.dumps(respons)
+        return respons, 400
     # new data
     username = request_data.get('username')
     fullname = request_data.get('fullname')
@@ -373,9 +403,19 @@ def edit_profile():
         userDB.photoprofile = photoprofile
         
         db.session.commit()
-        return 'Data has been edited', 200
+        respons = {
+                'sukses': True,
+                'message': 'Data has been edited'
+            }
+        respons = json.dumps(respons)
+        return respons, 200
     else:
-        return 'Method not Allowed', 400
+        respons = {
+                'sukses': False,
+                'message': 'Method not Allowed'
+            }
+        respons = json.dumps(respons)
+        return respons, 400
 
 # password change route
 @app.route('/passchange', methods = ['PUT'])
@@ -383,9 +423,19 @@ def change_pass():
     try:
         decoded = jwt.decode(request.headers["Authorization"], 'lalala', algorithms=['HS256'])
         if decoded['rahasia'] != 'secret':
-            return "You have to logged in", 400
+            respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+            respons = json.dumps(respons)
+            return respons, 400
     except jwt.exceptions.DecodeError:
-        return "You have to logged in", 400
+        respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+        respons = json.dumps(respons)
+        return respons, 400
     request_data = request.get_json()
     req_username = decoded['username']
     req_password = request_data.get('password')
@@ -395,18 +445,39 @@ def change_pass():
     verify_new_password = request_data.get('rePassword')
     print(req_password, new_password, verify_new_password)
     if new_password == req_password or req_password == verify_new_password:
-        return 'Password must be diffrent from previous', 400
+        respons = {
+                'sukses': False,
+                'message': 'Password must be diffrent from previous'
+            }
+        respons = json.dumps(respons)
+        return respons, 400
+
     if request.method == 'PUT':
         userDB = Person.query.filter_by(username=req_username, password=req_password).first()
         if userDB is not None and new_password == verify_new_password:
             userDB.password = new_password
         else:
-            return 'Wrong password', 404
+            respons = {
+                'sukses': False,
+                'message': 'Wrong password'
+            }
+            respons = json.dumps(respons)
+            return respons, 404
         
         db.session.commit()
-        return 'Data has been edited', 200
+        respons = {
+            'sukses': True,
+            'message': 'Data has been edited'
+        }
+        respons = json.dumps(respons)
+        return respons, 200
     else:
-        return 'Method not Allowed', 400
+        respons = {
+            'sukses': False,
+            'message': 'Method not Allowed'
+        }
+        respons = json.dumps(respons)
+        return respons, 400
 
 # Delete tweet routing
 @app.route('/deleteTweet', methods = ['DELETE'])
@@ -456,9 +527,19 @@ def show_suggestion():
     try:
         decoded = jwt.decode(request.headers["Authorization"], 'lalala', algorithms=['HS256'])
         if decoded['rahasia'] != 'secret':
-            return "You have to logged in", 400
+            respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+            respons = json.dumps(respons)
+            return respons, 400
     except jwt.exceptions.DecodeError:
-        return "You have to logged in", 400
+        respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+        respons = json.dumps(respons)
+        return respons, 400
     # request_data = request.get_json()
     # print(request_data)
     # username = request_data.get('username')
@@ -485,12 +566,23 @@ def show_suggestion():
                 'photoprofile' : fields.String
             }
         
-        user_json = json.dumps(marshal(suggestion, json_format))
+        user_json = marshal(suggestion, json_format)
         # print(user_json)
-        return user_json, 200   
+        respons = {
+                'sukses': True,
+                'message': 'Succes',
+                'data' : user_json
+            }
+        respons = json.dumps(respons)
+        return respons, 200   
     else:
-        return 'Method not allowed', 400
-    return 'ok', 200
+        respons = {
+                'sukses': False,
+                'message': 'Method not Allowed'
+            }
+        respons = json.dumps(respons)
+        return respons , 400
+
 
 
 # follow other user route
@@ -499,9 +591,19 @@ def follow():
     try:
         decoded = jwt.decode(request.headers["Authorization"], 'lalala', algorithms=['HS256'])
         if decoded['rahasia'] != 'secret':
-            return "You have to logged in", 400
+            respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+            respons = json.dumps(respons)
+            return respons, 400
     except jwt.exceptions.DecodeError:
-        return "You have to logged in", 400
+        respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+        respons = json.dumps(respons)
+        return respons, 400
     request_data = request.get_json()
     
 
@@ -521,30 +623,48 @@ def follow():
             # add request_data to db
             db.session.add(send_data)
             db.session.commit()
-
-            return 'ok', 200
+            respons = {
+                    'sukses': True,
+                    'message': 'Success'
+                }
+            respons = json.dumps(respons)
+            return respons, 200
         
         else:
-            return 'Bad Request', 400
+            respons = {
+                    'sukses': False,
+                    'message': 'Bad Request'
+                }
+            respons = json.dumps(respons)
+            return respons, 400
     else:
-        return 'Method not allowed', 400
+        respons = {
+                'sukses': False,
+                'message': 'Method not Allowed'
+            }
+        respons = json.dumps(respons)
+        return respons, 400
 
 
 # show status user route
 @app.route('/showstats', methods = ['GET','POST'])
 def show_status():
-    # request_data = request.get_json()
-    # username = request_data.get('username')
-    # print(username)
-
     try:
         decoded = jwt.decode(request.headers["Authorization"], 'lalala', algorithms=['HS256'])
         if decoded['rahasia'] != 'secret':
-            return "You have to logged in", 400
+            respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+            respons = json.dumps(respons)
+            return respons, 400
     except jwt.exceptions.DecodeError:
-        return "You have to logged in", 400
-    # print("AAAAA")
-    # print(decoded)
+        respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+        respons = json.dumps(respons)
+        return respons, 400
 
     user = Person.query.filter_by(username = decoded['username']).first()
     following = Follow.query.filter_by(person_id = user.id).count()
@@ -561,11 +681,22 @@ def show_status():
             'followers' : followers,
             'bio' : user.bio
         }
-        status = json.dumps(json_format)
-        # print(status)
-        return status, 200
+
+        respons = {
+                'sukses': True,
+                'message': 'Succes',
+                'data': json_format
+            }
+        respons = json.dumps(respons)
+        print(respons)
+        return respons, 200
     else:
-        return 'method not allowed', 400
+        respons = {
+                'sukses': False,
+                'message': 'method not allowed'
+            }
+        respons = json.dumps(respons)
+        return respons , 400
 
 
 # show trending tweets route
@@ -574,9 +705,19 @@ def show_trending():
     try:
         decoded = jwt.decode(request.headers["Authorization"], 'lalala', algorithms=['HS256'])
         if decoded['rahasia'] != 'secret':
-            return "You have to logged in", 400
+            respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+            respons = json.dumps(respons)
+            return respons, 400
     except jwt.exceptions.DecodeError:
-        return "You have to logged in", 400
+        respons = {
+                'sukses': False,
+                'message': 'You have to logged in'
+            }
+        respons = json.dumps(respons)
+        return respons, 400
     
     tweet = Tweets.query.all()
     content = ""
@@ -603,9 +744,16 @@ def show_trending():
     final = {}
     for data in ascending:
         final[data] = trending[data]
-    trending = json.dumps(final)
+    
     # print(trending)
-    return trending, 200
+    respons = {
+            'sukses': True,
+            'message': 'Success',
+            'data': final
+        }
+    respons = json.dumps(respons)
+    # print(respons)
+    return respons, 200
 
 ########################
 ###### SESSION##########

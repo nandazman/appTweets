@@ -3,10 +3,10 @@ from flask_restful import Resource, Api, reqparse, inputs, abort
 from datetime import datetime
 import json
 
-with open('users.json') as data_file:
+with open('C:/Users/NFA\Desktop/python/Latian REST API/TweetApp/users.json') as data_file:
     users = json.load(data_file)
     data_file.close()
-with open('tweets.json') as data_file:
+with open('C:/Users/NFA\Desktop/python/Latian REST API/TweetApp/tweets.json') as data_file:
     tweets = json.load(data_file)
     data_file.close()
 
